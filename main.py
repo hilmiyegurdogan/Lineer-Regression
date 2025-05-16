@@ -43,18 +43,23 @@ print(top_3_countries)
 
 # Model için bağımsız değişkenler (features) seçme
 features = ['GDP', 'TotalExpenditure', 'Alcohol']
+print(train_set[features].isnull().sum())
+print(test_set[features].isnull().sum())
 
-# Y (bağımlı değişken) olarak LifeExpectancy'yi seçiyoruz
+# Eksik verileri silme (alternatif olarak doldurma da yapılabilir)
+train_set = train_set.dropna(subset=features + ['LifeExpectancy'])
+test_set = test_set.dropna(subset=features + ['LifeExpectancy'])
+
+# Verileri ayır
 X_train = train_set[features]
 y_train = train_set['LifeExpectancy']
 X_test = test_set[features]
 y_test = test_set['LifeExpectancy']
 
-# Verileri standartlaştırma (isteğe bağlı ama genellikle iyidir)
+# Standartlaştırma
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-
 # Linear Regression modelini eğitme
 model_gdp = LinearRegression().fit(X_train_scaled[:, 0].reshape(-1, 1), y_train)  # GDP ile model
 model_expenditure = LinearRegression().fit(X_train_scaled[:, 1].reshape(-1, 1), y_train)  # TotalExpenditure ile model
